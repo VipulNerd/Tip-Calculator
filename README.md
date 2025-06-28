@@ -101,4 +101,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 💡 Author
 
 Developed by **Vipul Gupta**  
-Feel free to connect on [LinkedIn](https://www.linkedin.com/) or contribute via GitHub!
+Feel free to connect on [LinkedIn]([https://www.linkedin.com/](https://www.linkedin.com/in/nerd-vipul-gupta/)) or contribute via GitHub!
