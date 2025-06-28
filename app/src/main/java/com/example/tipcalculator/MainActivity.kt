@@ -42,11 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -82,15 +77,6 @@ fun TipCalTheme() {
     val member = memberInput.toIntOrNull() ?: 1
     val tip = tipCalc(amount, tipPercent,roundUp, member)
     val splitAmount = billCalc(amount, tipPercent,roundUp, member)
-
-    val focusRequester = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-        keyboardController?.show()
-    }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -144,7 +130,6 @@ fun TipCalTheme() {
                     onValueChange = { amountInput = it },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     modifier = Modifier
-                        .focusRequester(focusRequester)
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -164,7 +149,6 @@ fun TipCalTheme() {
                     onValueChange = { tipInput = it },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     modifier = Modifier
-                        .focusRequester(focusRequester)
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -183,7 +167,6 @@ fun TipCalTheme() {
                     onValueChange = { memberInput = it },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     modifier = Modifier
-                        .focusRequester(focusRequester)
                         .padding(horizontal = 20.dp, vertical = 8.dp)
 
                 )
@@ -298,14 +281,11 @@ internal fun tipCalc(amount: Double, tipPercent: Double, roundUp: Boolean, membe
 }
 
 @VisibleForTesting
-internal fun billCalc(amount: Double, tipPercent: Double, roundUp: Boolean, member: Int): String{
-    val tip = tipPercent/100 * amount
-    val split = tip/member
-    var totalAmount = (amount/member) + split
-    if(roundUp){
-        totalAmount = kotlin.math.ceil(totalAmount)
-    }
-    return NumberFormat.getCurrencyInstance().format(totalAmount)
+internal fun billCalc(amount: Double, tipPercent: Double, roundUp: Boolean, member: Int): String {
+    val tip = amount * tipPercent / 100
+    val totalPerPerson = (amount + tip) / member
+    val finalAmount = if (roundUp) kotlin.math.ceil(totalPerPerson) else totalPerPerson
+    return NumberFormat.getCurrencyInstance().format(finalAmount)
 }
 
 
